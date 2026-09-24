@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Absensi Siswa | HAZEL X TLJ</title>
+<style>
+:root{--purple:#7c3aed;--blue:#2563eb;--ink:#201747}
+*{box-sizing:border-box}
+body{margin:0;padding:18px 13px;font-family:system-ui,Arial,sans-serif;background:linear-gradient(135deg,#ede9fe,#dbeafe,#fce7f3);color:var(--ink);min-height:100vh}
+.wrap{max-width:560px;margin:auto}
+.hero{padding:24px 20px;color:#fff;border-radius:24px;background:linear-gradient(135deg,#6d28d9,#2563eb);box-shadow:0 12px 30px #4f46e544;margin-bottom:16px}
+.brand{font-size:12px;letter-spacing:2px;font-weight:800;opacity:.9}
+h1{font-size:27px;margin:9px 0}.hero p{font-size:13px;margin:0;opacity:.92}
+.clock{margin-top:18px;padding:13px;border-radius:15px;background:#ffffff20}
+#time{font-size:28px;font-weight:800;letter-spacing:1px}#date{font-size:12px}
+.wib{display:inline-block;margin-top:8px;padding:5px 10px;background:#ffffff25;border-radius:20px;font-size:11px}
+.card{background:#fff;border-radius:21px;padding:21px;margin-bottom:15px;box-shadow:0 8px 25px #312e8110}
+.card h2{font-size:19px;margin:0 0 5px}.sub{font-size:12px;color:#817b98;margin:0 0 18px}
+label.title{display:block;font-size:13px;font-weight:750;margin:0 0 8px}
+input[type=text]{width:100%;padding:14px;border:2px solid #e9e5f5;border-radius:12px;font-size:15px;outline:none;margin-bottom:18px}
+input[type=text]:focus{border-color:var(--purple)}
+.status{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.opt input{display:none}.opt span{display:block;text-align:center;padding:14px 5px;border:2px solid #eeeaf7;border-radius:13px;font-size:13px;font-weight:700;cursor:pointer}
+.opt input:checked+span{border-color:var(--purple);background:#f3e8ff;color:#6d28d9}
+button{border:0;border-radius:12px;font-weight:750;cursor:pointer}
+.send{width:100%;padding:16px;color:#fff;background:linear-gradient(135deg,#7c3aed,#2563eb);font-size:14px}
+.send:disabled{opacity:.6;cursor:wait}
+.note{text-align:center;color:#88839e;font-size:11px;line-height:1.6;margin-top:12px}
+.success{display:none;text-align:center;padding:13px;background:#dcfce7;color:#166534;border-radius:12px;margin-top:13px;font-size:13px}
+.record{display:flex;gap:10px;align-items:center;border:1px solid #eeeaf7;border-radius:13px;padding:12px;margin-top:9px}
+.avatar{width:40px;height:40px;flex-shrink:0;border-radius:12px;background:linear-gradient(135deg,#c4b5fd,#93c5fd);display:grid;place-items:center;color:white;font-weight:800}
+.info{flex:1;min-width:0}.info strong{display:block;font-size:13px;overflow-wrap:anywhere}.info small{display:block;color:#817b98;font-size:11px;margin-top:4px}
+.badge{font-size:10px;font-weight:800;padding:6px 8px;border-radius:20px;white-space:nowrap}
+.Hadir{background:#dcfce7;color:#15803d}.Izin{background:#fef3c7;color:#a16207}.Sakit{background:#dbeafe;color:#1d4ed8}.Alpa{background:#fee2e2;color:#b91c1c}
+.empty{text-align:center;color:#9993ad;font-size:13px;padding:22px 5px}
+.tools{display:flex;gap:9px;margin-top:14px}
+.secondary{flex:1;padding:12px;background:#f3e8ff;color:#6d28d9;font-size:12px}
+.danger{background:#fee2e2;color:#b91c1c}
+.footer{text-align:center;color:#827b9f;font-size:11px;padding:10px 0 20px}
+#toast{position:fixed;bottom:18px;left:50%;transform:translate(-50%,100px);background:#1e1b4b;color:#fff;padding:13px 18px;border-radius:12px;font-size:13px;transition:.25s;max-width:90%;z-index:5}
+#toast.show{transform:translate(-50%,0)}
+@media(max-width:360px){.card{padding:16px}h1{font-size:23px}#time{font-size:24px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="hero">
+  <div class="brand">HAZEL X TLJ • STUDENT SYSTEM</div>
+  <h1>ABSENSI SISWA X TKJ 2</h1>
+  <p>Silahkan isi absen kamu hari ini</p>
+  <div class="clock">
+    <div id="time">--:--:--</div>
+    <div id="date">Memuat tanggal...</div>
+    <span class="wib">🌏 Waktu Indonesia Barat (WIB)</span>
+  </div>
+</header>
+
+<section class="card">
+  <h2>📝 Form Absensi</h2>
+  <p class="sub">Isi nama dan pilih status kehadiran.</p>
+  <form id="form">
+    <label class="title" for="name">Nama lengkap siswa</label>
+    <input id="name" type="text" maxlength="60" placeholder="Masukkan nama lengkap..." autocomplete="name" required>
+    <label class="title">Status kehadiran</label>
+    <div class="status">
+      <label class="opt"><input type="radio" name="status" value="Hadir" required><span>✅ Hadir</span></label>
+      <label class="opt"><input type="radio" name="status" value="Izin"><span>📩 Izin</span></label>
+      <label class="opt"><input type="radio" name="status" value="Sakit"><span>🤒 Sakit</span></label>
+      <label class="opt"><input type="radio" name="status" value="Alpa"><span>❌ Alpa</span></label>
+    </div>
+    <button class="send" id="send" type="submit">Kirim Absensi 🚀</button>
+    <div class="success" id="success">✅ Absensi berhasil dikirim!</div>
+  </form>
+  <p class="note">Setelah email berhasil dikirim, absensi akan masuk ke daftar pada browser/perangkat ini.</p>
+</section>
+
+<section class="card">
+  <h2>📋 Daftar Absensi</h2>
+  <p class="sub" id="listDate">Absensi hari ini</p>
+  <div id="records"><div class="empty">Belum ada absensi hari ini 🌱</div></div>
+  <div class="tools">
+    <button class="secondary" id="exportBtn" type="button">📥 Unduh CSV</button>
+    <button class="secondary danger" id="clearBtn" type="button">🗑 Hapus Semua Data</button>
+  </div>
+  <p class="note">Daftar ini tersimpan lokal di browser ini, bukan rekap online bersama.</p>
+</section>
+
+<div class="footer">HAZEL X TLJ 2</div>
+</div>
+<div id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+const SERVICE_ID = "service_jh6r15d";
+const TEMPLATE_ID = "template_bw4nc3t";
+const PUBLIC_KEY = "hwLLiwzl86ZcZ6yQh";
+const STORAGE_KEY = "hazel_tlj_absensi_v1";
+const $ = id => document.getElementById(id);
+const TZ = "Asia/Jakarta";
+
+function dateKey(d=new Date()){
+  const parts=new Intl.DateTimeFormat("en-CA",{timeZone:TZ,year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(d);
+  const p={}; parts.forEach(x=>p[x.type]=x.value);
+  return `${p.year}-${p.month}-${p.day}`;
+}
+function dateLabel(d=new Date()){
+  return new Intl.DateTimeFormat("id-ID",{timeZone:TZ,weekday:"long",day:"numeric",month:"long",year:"numeric"}).format(d);
+}
+function timeLabel(d=new Date()){
+  return new Intl.DateTimeFormat("id-ID",{timeZone:TZ,hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"}).format(d);
+}
+function updateClock(){
+  const n=new Date();
+  $("time").textContent=timeLabel(n);
+  $("date").textContent=dateLabel(n);
+  $("listDate").textContent="Absensi hari ini • "+dateLabel(n);
+}
+function loadData(){
+  try{return JSON.parse(localStorage.getItem(STORAGE_KEY))||[];}catch{return [];}
+}
+function saveData(data){localStorage.setItem(STORAGE_KEY,JSON.stringify(data));}
+function toast(msg){
+  $("toast").textContent=msg;$("toast").classList.add("show");
+  setTimeout(()=>$("toast").classList.remove("show"),2800);
+}
+function render(){
+  const today=dateKey();
+  const data=loadData().filter(x=>x.date===today);
+  const root=$("records");root.innerHTML="";
+  if(!data.length){root.innerHTML='<div class="empty">Belum ada absensi hari ini 🌱</div>';return;}
+  data.slice().reverse().forEach(item=>{
+    const row=document.createElement("div");row.className="record";
+    const avatar=document.createElement("div");avatar.className="avatar";avatar.textContent=(item.name||"?").charAt(0).toUpperCase();
+    const info=document.createElement("div");info.className="info";
+    const name=document.createElement("strong");name.textContent=item.name;
+    const stamp=document.createElement("small");stamp.textContent=`${item.date} • ${item.time} WIB`;
+    const badge=document.createElement("span");badge.className="badge "+item.status;badge.textContent=item.status;
+    info.append(name,stamp);row.append(avatar,info,badge);root.append(row);
+  });
+}
+emailjs.init({publicKey:PUBLIC_KEY});
+
+$("form").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const name=$("name").value.trim().replace(/\s+/g," ");
+  const status=document.querySelector('input[name="status"]:checked')?.value;
+  if(!name||!status){toast("Isi nama dan pilih status dahulu.");return;}
+  const data=loadData(),today=dateKey();
+  if(data.some(x=>x.date===today&&x.name.toLowerCase()===name.toLowerCase())){
+    toast("Nama ini sudah tercatat hari ini di perangkat ini.");return;
+  }
+  const sentAt=new Date();
+  const params={
+    student_name:name,
+    attendance_status:status,
+    attendance_date:dateKey(sentAt),
+    attendance_time:timeLabel(sentAt)+" WIB"
+  };
+  const btn=$("send");btn.disabled=true;btn.textContent="Mengirim absensi...";
+  $("success").style.display="none";
+  try{
+    await emailjs.send(SERVICE_ID,TEMPLATE_ID,params);
+    data.push({name,status,date:dateKey(sentAt),time:timeLabel(sentAt),timestamp:sentAt.toISOString()});
+    saveData(data);$("form").reset();render();
+    $("success").style.display="block";toast("Absensi berhasil dikirim!");
+  }catch(err){
+    console.error(err);toast("Gagal mengirim. Cek koneksi dan template EmailJS.");
+  }finally{btn.disabled=false;btn.textContent="Kirim Absensi 🚀";}
+});
+
+$("clearBtn").addEventListener("click",()=>{
+  if(confirm("Yakin hapus SEMUA data absensi yang tersimpan di browser ini?")){
+    localStorage.removeItem(STORAGE_KEY);render();toast("Semua data lokal dihapus.");
+  }
+});
+$("exportBtn").addEventListener("click",()=>{
+  const data=loadData();
+  if(!data.length){toast("Belum ada data untuk diunduh.");return;}
+  const rows=[["Nama","Status","Tanggal","Waktu WIB"],...data.map(x=>[x.name,x.status,x.date,x.time])];
+  const csv="\uFEFF"+rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(",")).join("\r\n");
+  const blob=new Blob([csv],{type:"text/csv;charset=utf-8;"});
+  const url=URL.createObjectURL(blob);const a=document.createElement("a");
+  a.href=url;a.download="absensi-hazel-x-tlj.csv";a.click();URL.revokeObjectURL(url);
+});
+updateClock();render();setInterval(updateClock,1000);
+</script>
+</body>
+</html>
